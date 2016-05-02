@@ -23,7 +23,7 @@ class Excel
     public function __construct($filePath)
     {
         $this->outputFilePath = $filePath;
-        $this->inputFilePath = __DIR__ . '/template.xlsx';
+        $this->inputFilePath = __DIR__ . '/../template.xlsx';
     }
 
 

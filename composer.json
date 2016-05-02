@@ -5,7 +5,7 @@
     "description": "Jira report",
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "JiraReport\\": "src/JiraReport"
         }
     },
     "require": {
