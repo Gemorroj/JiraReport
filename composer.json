@@ -1,0 +1,15 @@
+{
+    "name": "Gemorroj/Rrport",
+    "license": "proprietary",
+    "type": "project",
+    "description": "The Topby.by report",
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "box/spout": "^2.4"
+    }
+}
