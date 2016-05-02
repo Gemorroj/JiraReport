@@ -37,7 +37,7 @@ $jira = new Jira('login', 'password');
 // дополнительный фильтр дат для worklog
 $jira->setWorklogDates(new \DateTime('2016-04-01 00:00:00'), new \DateTime('2016-04-30 23:59:59'));
 // строка запроса JQL
-$jira->findIssues('(worklogAuthor = dpa AND worklogDate >= 2016-04-01 AND worklogDate <= 2016-04-30) OR (timespent IS NULL AND labels = pdiakonov AND resolutiondate >= 2016-04-01 AND resolutiondate <= 2016-04-30) ORDER BY key DESC');
+$jira->findIssues('(worklogAuthor = myusername AND worklogDate >= 2016-04-01 AND worklogDate <= 2016-04-30) OR (timespent IS NULL AND labels = mylabel AND resolutiondate >= 2016-04-01 AND resolutiondate <= 2016-04-30) ORDER BY key DESC');
 $jira->makeData();
 
 // формируем отчет
