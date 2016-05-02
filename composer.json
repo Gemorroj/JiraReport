@@ -1,8 +1,8 @@
 {
-    "name": "Gemorroj/Rrport",
-    "license": "proprietary",
-    "type": "project",
-    "description": "The Topby.by report",
+    "name": "gemorroj/jira-report",
+    "license": "MIT",
+    "type": "library",
+    "description": "Jira report",
     "autoload": {
         "psr-4": {
             "": "src/"

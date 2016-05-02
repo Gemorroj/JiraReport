@@ -1,5 +1,5 @@
 <?php
-namespace Gemorroj\Report;
+namespace Gemorroj\JiraReport;
 
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Reader\XLSX\Reader;
