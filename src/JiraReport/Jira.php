@@ -1,5 +1,5 @@
 <?php
-namespace Gemorroj\JiraReport;
+namespace JiraReport;
 
 class Jira
 {

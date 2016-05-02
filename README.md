@@ -29,8 +29,8 @@ $ php composer.phar update gemorroj/jira-report
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use Gemorroj\JiraReport\Jira;
-use Gemorroj\JiraReport\Excel;
+use JiraReport\Jira;
+use JiraReport\Excel;
 
 // авторизация
 $jira = new Jira('login', 'password');
