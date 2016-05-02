@@ -17,11 +17,7 @@ class Jira
     /**
      * @var resource
      */
-    private $stream;
-    /**
-     * @var \stdClass
-     */
-    protected $jsonData;
+    private $httpStream;
     /**
      * @var string
      */
@@ -44,7 +40,7 @@ class Jira
     {
         self::$username = $username;
 
-        $this->stream = \stream_context_create(
+        $this->httpStream = \stream_context_create(
             array('http' =>
                 array(
                     'method' => 'GET',
@@ -101,21 +97,21 @@ class Jira
     {
         $url = Jira::BASE_API_URL . '/search?maxResults=1000&fields=*all&jql=' . \rawurlencode($jql);
 
-        $rawData = \file_get_contents($url, null, $this->stream);
+        $rawData = \file_get_contents($url, null, $this->httpStream);
         if (false === $rawData) {
             throw new \Exception('Не удалось получить данные (' . $url . ').');
         }
 
-        $this->jsonData = json_decode($rawData);
-        if (!$this->jsonData) {
+        $jsonData = json_decode($rawData);
+        if (!$jsonData) {
             throw new \Exception('Не удалось преобразовать данные (' . $url . ').');
         }
 
-        if ($this->jsonData->errorMessages) {
-            throw new \Exception(\implode("\n", $this->jsonData->errorMessages));
+        if ($jsonData->errorMessages) {
+            throw new \Exception(\implode("\n", $jsonData->errorMessages));
         }
 
-        foreach ($this->jsonData->issues as $issue) {
+        foreach ($jsonData->issues as $issue) {
             $this->issues[] = $issue;
         }
 

@@ -72,20 +72,20 @@ class Excel
      * @param Writer $writer
      * @throws \Exception
      */
-    private function addData(Jira $jira, Writer $writer)
+    protected function addData(Jira $jira, Writer $writer)
     {
         $totalSpent = 0;
 
         foreach ($jira->getData() as $jiraIssue) {
             foreach ($jiraIssue->getData() as $data) {
 
-                $totalSpent += $data['timeSpent'];
+                $totalSpent += $data->getTimeSpent();
 
                 $writer->addRow(array(
-                    $data['date']->format('d.m.Y'),
-                    $data['key'],
-                    $data['summary'],
-                    $data['timeSpent'] ? $this->formatTimeSpent($data['timeSpent']) : '',
+                    $data->getDate()->format('d.m.Y'),
+                    $data->getKey(),
+                    $data->getSummary(),
+                    $data->getTimeSpent() ? $this->formatTimeSpent($data->getTimeSpent()) : '',
                 ));
 
             }
@@ -99,7 +99,7 @@ class Excel
      * @param float $timeSpent
      * @return float
      */
-    private function formatTimeSpent($timeSpent)
+    protected function formatTimeSpent($timeSpent)
     {
         return \round($timeSpent / 3600, 1);
     }

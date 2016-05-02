@@ -18,7 +18,7 @@ class JiraIssue
     }
 
     /**
-     * @return array
+     * @return Data[]
      */
     public function getData()
     {
@@ -31,28 +31,28 @@ class JiraIssue
 
 
     /**
-     * @param array $data
-     * @return array
+     * @return Data[]
      */
     private function makeDataResolution()
     {
         $data = array();
-        $data[] = array(
-            'date' => new \DateTime($this->jsonData->fields->resolutiondate),
-            'key' => $this->jsonData->key,
-            'summary' => $this->jsonData->fields->summary,
-            'timeSpent' => $this->jsonData->fields->timespent,
-        );
+
+        $data[] = (new Data())
+            ->setDate(new \DateTime($this->jsonData->fields->resolutiondate))
+            ->setKey($this->jsonData->key)
+            ->setSummary( $this->jsonData->fields->summary)
+            ->setTimeSpent($this->jsonData->fields->timespent);
+
         return $data;
     }
 
     /**
-     * @param array $data
-     * @return array
+     * @return Data[]
      */
     private function makeDataWorklog()
     {
         $data = array();
+
         foreach ($this->jsonData->fields->worklog->worklogs as $worklog) {
             if ($worklog->author->key !== Jira::getUsername()) {
                 continue;
@@ -63,13 +63,13 @@ class JiraIssue
                 continue;
             }
 
-            $data[] = array(
-                'date' => $date,
-                'key' => $this->jsonData->key,
-                'summary' => $this->jsonData->fields->summary,
-                'timeSpent' => $worklog->timeSpentSeconds,
-            );
+            $data[] = (new Data())
+                ->setDate($date)
+                ->setKey($this->jsonData->key)
+                ->setSummary($this->jsonData->fields->summary)
+                ->setTimeSpent($worklog->timeSpentSeconds);
         }
+
         return $data;
     }
 }
