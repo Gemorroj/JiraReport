@@ -3,9 +3,6 @@ namespace JiraReport;
 
 class Jira
 {
-    const BASE_API_URL = 'https://support.softclub.by/rest/api/latest';
-    const BASE_BROWSE_URL = 'https://support.softclub.by/browse';
-
     /**
      * @var JiraIssue[]
      */
@@ -21,24 +18,25 @@ class Jira
     /**
      * @var string
      */
-    protected static $username;
+    protected $username;
     /**
-     * @var \DateTime
+     * @var string
      */
-    protected static $worklogDateFrom;
+    protected $domain;
     /**
-     * @var \DateTime
+     * @var Filter|null
      */
-    protected static $worklogDateTo;
+    protected $filter;
 
     /**
      * Jira constructor.
      * @param string $username
      * @param string $password
+     * @param $domain $password
      */
-    public function __construct($username, $password)
+    public function __construct($username, $password, $domain = 'https://support.softclub.by')
     {
-        self::$username = $username;
+        $this->domain = $domain;
 
         $this->httpStream = \stream_context_create(
             array('http' =>
@@ -52,50 +50,13 @@ class Jira
 
 
     /**
-     * @param \DateTime $from
-     * @param \DateTime $to
-     */
-    public function setWorklogDates(\DateTime $from, \DateTime $to)
-    {
-        self::$worklogDateFrom = $from;
-        self::$worklogDateTo = $to;
-    }
-
-
-    /**
-     * @return \DateTime
-     */
-    public static function getWorklogDateFrom()
-    {
-        return self::$worklogDateFrom;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public static function getWorklogDateTo()
-    {
-        return self::$worklogDateTo;
-    }
-    
-    
-    /**
-     * @return string
-     */
-    public static function getUsername()
-    {
-        return self::$username;
-    }
-
-
-    /**
      * @param string $jql
      * @return array
      * @throws \Exception
      */
     public function findIssues($jql)
     {
-        $url = Jira::BASE_API_URL . '/search?maxResults=1000&fields=*all&jql=' . \rawurlencode($jql);
+        $url = $this->domain . '/rest/api/latest/search?maxResults=1000&fields=*all&jql=' . \rawurlencode($jql);
 
         $rawData = \file_get_contents($url, null, $this->httpStream);
         if (false === $rawData) {
@@ -118,14 +79,23 @@ class Jira
         return $this->issues;
     }
 
+    /**
+     * @param Filter|null $filter
+     * @return Jira
+     */
+    public function setFilter(Filter $filter = null)
+    {
+        $this->filter = $filter;
+        return $this;
+    }
 
     /**
-     *
+     * Make data
      */
     public function makeData()
     {
         foreach ($this->issues as $issue) {
-            $this->data[] = new JiraIssue($issue);
+            $this->data[] = new JiraIssue($issue, $this->filter);
         }
     }
 

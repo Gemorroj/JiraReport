@@ -7,14 +7,20 @@ class JiraIssue
      * @var \stdClass
      */
     protected $jsonData;
+    /**
+     * @var Filter
+     */
+    protected $filter;
 
     /**
      * @param \stdClass $issue
+     * @param Filter $filter
      * @throws \Exception
      */
-    public function __construct(\stdClass $issue)
+    public function __construct(\stdClass $issue, Filter $filter)
     {
         $this->jsonData = $issue;
+        $this->filter = $filter;
     }
 
     /**
@@ -54,12 +60,12 @@ class JiraIssue
         $data = array();
 
         foreach ($this->jsonData->fields->worklog->worklogs as $worklog) {
-            if ($worklog->author->key !== Jira::getUsername()) {
+            if (null !== $this->filter->getUsername() && $worklog->author->key !== $this->filter->getUsername()) {
                 continue;
             }
 
             $date = new \DateTime($worklog->created);
-            if ((Jira::getWorklogDateFrom() && $date < Jira::getWorklogDateFrom()) || (Jira::getWorklogDateTo() && $date > Jira::getWorklogDateTo())) {
+            if (($this->filter->getWorklogDateFrom() && $date < $this->filter->getWorklogDateFrom()) || ($this->filter->getWorklogDateTo() && $date > $this->filter->getWorklogDateTo())) {
                 continue;
             }
 

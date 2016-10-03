@@ -31,13 +31,21 @@ require __DIR__ . '/vendor/autoload.php';
 
 use JiraReport\Jira;
 use JiraReport\Excel;
+use JiraReport\Filter;
 
 // авторизация
-$jira = new Jira('login', 'password');
+$jira = new Jira('myusername', 'password');
+
 // дополнительный фильтр дат для worklog
-$jira->setWorklogDates(new \DateTime('2016-04-01 00:00:00'), new \DateTime('2016-04-30 23:59:59'));
+$filter = (new Filter())
+    ->setUsername('myusername')
+    ->setWorklogDateFrom(new \DateTime('2016-04-01 00:00:00'))
+    ->setWorklogDateTo(new \DateTime('2016-04-30 23:59:59'));
+$jira->setFilter($filter);
+
 // строка запроса JQL
 $jira->findIssues('(worklogAuthor = myusername AND worklogDate >= 2016-04-01 AND worklogDate <= 2016-04-30) OR (timespent IS NULL AND labels = mylabel AND resolutiondate >= 2016-04-01 AND resolutiondate <= 2016-04-30) ORDER BY key DESC');
+// вытаскиваем данные из jira
 $jira->makeData();
 
 // формируем отчет
