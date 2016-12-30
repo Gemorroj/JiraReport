@@ -1,6 +1,8 @@
 <?php
 namespace JiraReport;
 
+use JiraReport\Filter\Worklog;
+
 class JiraIssue
 {
     /**
@@ -8,19 +10,19 @@ class JiraIssue
      */
     protected $jsonData;
     /**
-     * @var Filter|null
+     * @var Filter[]
      */
-    protected $filter;
+    protected $filters;
 
     /**
      * @param \stdClass $issue
-     * @param Filter|null $filter
+     * @param Filter[] $filters
      * @throws \Exception
      */
-    public function __construct(\stdClass $issue, Filter $filter = null)
+    public function __construct(\stdClass $issue, array $filters = array())
     {
         $this->jsonData = $issue;
-        $this->filter = $filter;
+        $this->filters = $filters;
     }
 
     /**
@@ -28,6 +30,8 @@ class JiraIssue
      */
     public function getData()
     {
+        $this->applyFilters($this->jsonData);
+
         if ($this->jsonData->fields->worklog->worklogs) {
             return $this->makeDataWorklog();
         } else {
@@ -60,11 +64,6 @@ class JiraIssue
         $data = array();
 
         foreach ($this->jsonData->fields->worklog->worklogs as $worklog) {
-
-            if (!$this->applyFilter($worklog)) {
-                continue;
-            }
-
             $data[] = (new Data())
                 ->setDate(new \DateTime($worklog->created))
                 ->setKey($this->jsonData->key)
@@ -77,29 +76,13 @@ class JiraIssue
 
 
     /**
-     * @param \stdClass $worklog
-     * @return bool
+     * @param \stdClass $jsonData
      */
-    protected function applyFilter(\stdClass $worklog)
+    protected function applyFilters(\stdClass &$jsonData)
     {
-        if (!$this->filter) {
-            return true;
+        foreach ($this->filters as $filter) {
+            $filter->setJsonData($jsonData);
+            $filter->run();
         }
-
-        $worklogDate = new \DateTime($worklog->created);
-
-        if (null !== $this->filter->getUsername() && $worklog->author->key !== $this->filter->getUsername()) {
-            return false;
-        }
-
-        if (null !== $this->filter->getWorklogDateFrom() && $worklogDate < $this->filter->getWorklogDateFrom()) {
-            return false;
-        }
-
-        if (null !== $this->filter->getWorklogDateTo() && $worklogDate > $this->filter->getWorklogDateTo()) {
-            return false;
-        }
-
-        return true;
     }
 }

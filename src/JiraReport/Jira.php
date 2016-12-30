@@ -24,9 +24,9 @@ class Jira
      */
     protected $domain;
     /**
-     * @var Filter|null
+     * @var Filter[]
      */
-    protected $filter;
+    protected $filters = array();
 
     /**
      * Jira constructor.
@@ -80,12 +80,12 @@ class Jira
     }
 
     /**
-     * @param Filter|null $filter
-     * @return Jira
+     * @param Filter $filter
+     * @return $this
      */
-    public function setFilter(Filter $filter = null)
+    public function addFilter(Filter $filter)
     {
-        $this->filter = $filter;
+        $this->filters[] = $filter;
         return $this;
     }
 
@@ -95,7 +95,7 @@ class Jira
     public function makeData()
     {
         foreach ($this->issues as $issue) {
-            $this->data[] = new JiraIssue($issue, $this->filter);
+            $this->data[] = new JiraIssue($issue, $this->filters);
         }
     }
 
