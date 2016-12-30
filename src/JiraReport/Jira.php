@@ -18,10 +18,6 @@ class Jira
     /**
      * @var string
      */
-    protected $username;
-    /**
-     * @var string
-     */
     protected $domain;
     /**
      * @var Filter[]
@@ -32,7 +28,7 @@ class Jira
      * Jira constructor.
      * @param string $username
      * @param string $password
-     * @param $domain $password
+     * @param string $domain
      */
     public function __construct($username, $password, $domain = 'https://support.softclub.by')
     {
