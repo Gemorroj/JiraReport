@@ -31,7 +31,7 @@ class Data
 
     /**
      * @param \DateTime $date
-     * @return Data
+     * @return $this
      */
     public function setDate(\DateTime $date)
     {
@@ -49,7 +49,7 @@ class Data
 
     /**
      * @param string $key
-     * @return Data
+     * @return $this
      */
     public function setKey($key)
     {
@@ -67,7 +67,7 @@ class Data
 
     /**
      * @param string $summary
-     * @return Data
+     * @return $this
      */
     public function setSummary($summary)
     {
@@ -85,11 +85,19 @@ class Data
 
     /**
      * @param int $timeSpent
-     * @return Data
+     * @return $this
      */
     public function setTimeSpent($timeSpent)
     {
         $this->timeSpent = $timeSpent;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectName()
+    {
+        return \explode('-', $this->getKey(), 2)[0];
     }
 }
